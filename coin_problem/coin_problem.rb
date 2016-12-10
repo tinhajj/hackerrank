@@ -1,4 +1,8 @@
+def coin_dp(goal, coins, index)
+end
+
 def coin_count(goal, coins)
+
 end
 
 input = File.new("./input")
