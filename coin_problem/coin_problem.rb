@@ -1,8 +1,10 @@
 def coin_dp(goal, coins, index)
+  amountRemaining = goal - coins[index]
+  coin_dp(amountRemaining, coins, index + 1)
 end
 
 def coin_count(goal, coins)
-
+  coin_dp(goal, coins, 0)
 end
 
 input = File.new("./input")
