@@ -1,54 +1,64 @@
-def stringReduction_recursor(s, manipulations)
-  if matching_chars?(s)
+require 'benchmark'
+
+def stringReduction_recursor(s, memo)
+  if memo[s]
+    return memo[s]
+  end
+
+  if (choices = choices(s)).empty?
     return s.length
   end
 
-  manipulations.each do |index|
-    #place hold
+  sizes = []
+
+  choices.each do |choice_index|
+    new_string = Array.new(s)
+    replacement = other_char(s[choice_index..choice_index+1])
+
+    new_string.slice!(choice_index..choice_index+1)
+    new_string.insert(choice_index, replacement)
+
+    sizes << stringReduction_recursor(new_string, memo)
   end
 
-  new_manipulations = choices(s)
-  new_manipulations.each do |manipulation|
-    stringReduction_recursor(s, manipulation)
-  end
+  memo[s] = sizes.min
+  return sizes.min
 end
 
 def stringReduction(s)
-  stringReduction_recursor(s, [])
+  stringReduction_recursor(s.each_char.to_a, {})
+end
+
+def other_char(s)
+  if s.include?('a') && s.include?('b')
+    'c'
+  elsif s.include?('a') && s.include?('c')
+    'b'
+  elsif s.include?('c') && s.include?('b')
+    'a'
+  else
+    raise 'no definitive other character'
+  end
 end
 
 def choices(s)
   c = []
 
-  s.each_char.with_index do |letter, index|
+  s.each.with_index do |letter, index|
     c << index if s[index] != s[index + 1] && index + 1 < s.length
   end
 
   c
 end
 
-def matching_chars?(s)
-  if s.length == 0
-    raise 'empty string'
-  end
+#p stringReduction('babcbbaabcbcbcbaabbccaacccbbbcaaacabbbbaaaccbcccacbbccaccbbaacaccbabcaaaacaccacbaacc')
+p stringReduction('babbcbababcbabbaac')
+#p stringReduction('abaac')
 
-  firstchar = s[0]
-
-  s.each_char do |char|
-    if char != firstchar
-      return false
-    end
-  end
-
-  return true
-end
-
-stringReduction('abaac')
-
-#Hackerrank input style
+#hackerrank input
 #input = File.new("./input")
 #input.readline # Throw away line
 #
 #input.each do |line|
-#  stringReduction(line.chomp.chars)
+#  p stringReduction(line.chomp)
 #end
