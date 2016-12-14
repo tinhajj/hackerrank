@@ -1,6 +1,12 @@
 def coin_dp(goal, coins, index)
-  amountRemaining = goal - coins[index]
-  coin_dp(amountRemaining, coins, index + 1)
+  if goal == 0
+    1
+  end
+
+  if goal > coins[-1]
+    0
+  end
+
 end
 
 def coin_count(goal, coins)
