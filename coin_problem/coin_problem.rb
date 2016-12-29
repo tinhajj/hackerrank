@@ -1,22 +1,28 @@
-def coin_dp(goal, coins, index)
+def coin_change(coins, goal)
+  coin_change_helper(coins.sort!.reverse!, goal, 0, {})
+end
+
+def coin_change_helper(coins, goal, index, map)
   if goal == 0
-    1
+    return 1
+  elsif index > coins.length - 1
+    return 0
   end
 
-  if goal > coins[-1]
-    0
+  remaining = goal
+  current_coin = coins[index]
+  ways = []
+
+  while remaining >= current_coin or remaining == 0
+    ways << coin_change_helper(coins, remaining, index + 1, map)
+    remaining = remaining - current_coin
   end
 
+  ways.inject(&:+)
 end
 
-def coin_count(goal, coins)
-  coin_dp(goal, coins, 0)
-end
+coins = [3, 2, 1]
+target_goal = 4
 
-input = File.new("./input")
+p coin_change(coins, target_goal)
 
-input.each do |line|
-  goal = line[0].to_i
-  coins = input.readline.split(" ").map{ |c| c.to_i }
-  coin_count(goal, coins)
-end
